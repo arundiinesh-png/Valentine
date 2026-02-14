@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>For My Love ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Floating hearts animation */
+        .heart {
+            position: fixed;
+            bottom: -10px;
+            font-size: 24px;
+            animation: floatUp 6s linear forwards;
+            color: #f01038;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Hover effect for secret photos */
+        .secretPhoto:hover {
+            transform: scale(1.05) rotate(2deg);
+            transition: transform 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-pink-200 relative">
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="your-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- First Screen -->
+    <div id="questionBox" class="bg-white p-10 rounded-2xl shadow-2xl text-center mx-auto mt-20 max-w-md">
+        <h1 class="text-3xl font-bold text-pink-500 mb-6">
+            Will You Be My Valentine? 💖
+        </h1>
+        <div class="flex gap-4 justify-center">
+            <button onclick="sayYes()"
+                    class="bg-pink-500 text-white px-7 py-4 rounded-full hover:bg-pink-600 transition">
+                Yes ❤️
+            </button>
+
+            <button id="noBtn"
+                    class="bg-gray-300 px-7 py-4 rounded-full">
+                No 😢
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content" class="hidden bg-white p-10 overflow-auto max-w-5xl mx-auto mt-10">
+
+        <h1 class="text-4xl text-center text-pink-500 font-bold mb-10">
+            I Love You So Much ❤️
+        </h1>
+
+        <!-- First Photo Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <img src="photo1.jpeg" class="rounded-xl shadow-lg">
+            <img src="photo2.jpeg" class="rounded-xl shadow-lg">
+            <img src="photo3.jpeg" class="rounded-xl shadow-lg">
+        </div>
+
+        <!-- Love Message -->
+        <div class="text-center text-lg text-gray-700 max-w-2xl mx-auto mb-16">
+            <p>
+                Thank you for being the most amazing person in my life.
+                Every moment with you feels magical ✨
+            </p>
+        </div>
+
+        <!-- Our Story -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-pink-500 mb-4">Our Story 💕</h2>
+            <p class="max-w-xl mx-auto text-gray-700">
+                From the first day we met, I knew you were special...
+                Every moment with you became my favorite memory.
+            </p>
+        </div>
+
+        <!-- Button to reveal secret section -->
+        <div class="flex gap-4 justify-center mb-16">
+            <button class="mt-6 bg-pink-500 text-white px-6 py-2 rounded-full"
+                    onclick="revealSecret()">
+                See More Memories 💖
+            </button>
+        </div>
+    </div>
+
+    <!-- Secret Section (6 Photos) -->
+    <div id="secretSection" class="hidden bg-white p-10 overflow-auto max-w-5xl mx-auto mt-10">
+        <h2 class="text-3xl font-bold text-pink-600 mb-6 text-center">More Memories 📸</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <img src="photo4.jpeg" class="rounded-2xl shadow-2xl secretPhoto">
+            <img src="photo5.jpeg" class="rounded-2xl shadow-2xl secretPhoto">
+            <img src="photo6.jpeg" class="rounded-2xl shadow-2xl secretPhoto">
+            <img src="photo7.jpeg" class="rounded-2xl shadow-2xl secretPhoto">
+            <img src="photo8.jpeg" class="rounded-2xl shadow-2xl secretPhoto">
+            <img src="photo9.jpeg" class="rounded-2xl shadow-2xl secretPhoto">
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById("noBtn");
+        let scale = 1;
+        let hoverCount = 0;
+
+        function moveButton() {
+            hoverCount++;
+            noBtn.style.position = "absolute";
+            noBtn.style.transition = "all 0.3s ease";
+
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+
+            noBtn.style.left = Math.random() * maxX + "px";
+            noBtn.style.top = Math.random() * maxY + "px";
+
+            scale -= 0.08;
+            if (scale > 0.3) noBtn.style.transform = `scale(${scale})`;
+
+            if (hoverCount === 4) noBtn.innerText = "Are you sure? 🥺";
+            if (hoverCount === 8) noBtn.innerText = "Think again 😭";
+
+            if (hoverCount >= 8) {
+                noBtn.innerText = "Okay fine... Yes ❤️";
+                noBtn.style.transform = "scale(1)";
+                noBtn.style.position = "static";
+                noBtn.onclick = sayYes;
+            }
+        }
+
+        // For desktop and mobile
+        noBtn.addEventListener("mouseover", moveButton);
+        noBtn.addEventListener("touchstart", moveButton);
+
+        function sayYes() {
+            const question = document.getElementById("questionBox");
+            question.style.opacity = "0";
+            question.style.transition = "opacity 0.5s";
+
+            setTimeout(() => {
+                question.style.display = "none";
+                document.getElementById("content").classList.remove("hidden");
+            }, 500);
+
+            // Play music
+            document.getElementById("bgMusic").play();
+
+            // Start floating hearts (limit 100)
+            let heartCount = 0;
+            const heartInterval = setInterval(() => {
+                if (heartCount >= 100) {
+                    clearInterval(heartInterval);
+                    return;
+                }
+                createHeart();
+                heartCount++;
+            }, 300);
+        }
+
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerHTML = "❤️";
+            heart.style.left = Math.random() * window.innerWidth + "px";
+            heart.style.fontSize = Math.random() * 20 + 20 + "px";
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+
+        function revealSecret() {
+            const secret = document.getElementById("secretSection");
+            secret.classList.remove("hidden");
+            secret.scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+</body>
+</html>
